@@ -21,8 +21,7 @@ span{
 .custom-select {
     width: 140px; 
     font-size: 13px; 
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
+    border-radius: 5px;
     background-color: #E8F2FE;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -33,4 +32,71 @@ span{
 .icon-size {
     width: 40px;  
     height: 40px; 
+}
+
+.search-bar-container {
+    position: relative;
+    display: flex;
+    justify-content: center; 
+    margin-top: 20px; 
+}
+.search-bar {
+    font-weight: 500;
+    width: 100%; 
+    max-width: 600px;
+    height: 55px;
+    border-radius: 20px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    text-align: center;
+    font-size: larger;
+    color: #363C48;
+    background-color: #FFFEEA;
+}
+
+.location-btn{
+    background-color:#FFFEEA;
+    border: none;
+    border-radius: 20px;
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    width: 60px;
+    margin-left: 10px;
+}
+
+.location-btn:hover{
+    background-color:#f4f3e2;
+}
+
+
+.location-btn-icon{
+    width: 30px;
+    height: 30px;
+}
+
+.suggestions-list {
+    position: absolute;
+    border: 1px solid #ddd;
+    border-top: none;
+    background-color: #fff;
+    margin-top: 63px;
+    max-height: 150px;
+    padding: 0;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    margin-right: 65px;
+}
+
+.suggestions-list li {
+    padding: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    background-color: white;
+}
+
+.suggestions-list li:hover {
+    background-color: #f0f0f0;
 }
