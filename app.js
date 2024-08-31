@@ -1,6 +1,8 @@
-let currentLocatioData;
+let currentLocationData;
 let currentLocationName;
-let currentLocatioId;
+let currentLocationId;
+let map;
+let marker;
 
 function updateDetails(){
     const elements = document.querySelectorAll('.fade-target'); 
@@ -10,29 +12,54 @@ function updateDetails(){
         element.classList.add('fade-in');
     });
 
-    document.getElementById('currentTemp').innerText = Math.round(currentLocatioData.current.temp_c) + "°";
-    document.getElementById('currentCondtionIcon').src = currentLocatioData.current.condition.icon;
-    document.getElementById('currentStatusText').innerText = currentLocatioData.current.condition.text;
-    document.getElementById('currentFeelsLikeText').innerText = "Feels Like " + Math.round(currentLocatioData.current.feelslike_c)+"°";
-    document.getElementById('highAndLowTemp').innerText = "High " + Math.round(currentLocatioData.forecast.forecastday[0].day.maxtemp_c) + "° | Low " + Math.round(currentLocatioData.forecast.forecastday[0].day.mintemp_c) + "°";
-
-   
+    document.getElementById('currentTemp').innerText = Math.round(currentLocationData.current.temp_c) + "°";
+    document.getElementById('currentCondtionIcon').src = currentLocationData.current.condition.icon;
+    document.getElementById('currentStatusText').innerText = currentLocationData.current.condition.text;
+    document.getElementById('currentFeelsLikeText').innerText = "Feels Like " + Math.round(currentLocationData.current.feelslike_c)+"°";
+    document.getElementById('highAndLowTemp').innerText = "High " + Math.round(currentLocationData.forecast.forecastday[0].day.maxtemp_c) + "° | Low " + Math.round(currentLocationData.forecast.forecastday[0].day.mintemp_c) + "°";
 }
 
+function initMap() {
+   
+    map = L.map('map').setView([51.505, -0.09], 13); 
+
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    
+    map.on('click', function(e) {
+        if (marker) {
+            marker.setLatLng(e.latlng); 
+        } else {
+            marker = L.marker(e.latlng).addTo(map); 
+        }
+        console.log(`Selected location: ${e.latlng.lat}, ${e.latlng.lng}`);
+    });
+}
 document.addEventListener('DOMContentLoaded', async () => {
+
+initMap();  
+
     const searchInput = document.getElementById('searchInput');
     const suggestionsList = document.getElementById('suggestionsList');
-
-    currentLocatioId = "id:"+2842265;
-    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(currentLocatioId)}&days=3&aqi=no&alerts=yes`);
-    currentLocatioData = await response.json();
-    currentLocationName =currentLocatioData.location.name + ", " + currentLocatioData.location.country;
+    
+    currentLocationId = "id:"+2842265;
+    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(currentLocationId)}&days=3&aqi=no&alerts=yes`);
+    currentLocationData = await response.json();
+    currentLocationName =currentLocationData.location.name + ", " + currentLocationData.location.country;
     searchInput.value = currentLocationName;
     updateDetails();
    
     function adjustSuggestionsListWidth() {
         const inputWidth = searchInput.getBoundingClientRect().width;
         suggestionsList.style.width = `${inputWidth - 10}px`;
+    }
+
+    function closeSuggestions(){
+        suggestionsList.innerHTML = '';
+        suggestionsList.style.display = 'none';
     }
 
     adjustSuggestionsListWidth();
@@ -45,9 +72,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     searchInput.addEventListener('input', async () => {
         const query = searchInput.value;
 
-        if (query.length == 0) {
-            suggestionsList.innerHTML = '';
-            suggestionsList.style.display = 'none';
+        if (query.length < 3) {
+            closeSuggestions();
             return;
         }
         suggestionsList.style.display = 'block';
@@ -55,8 +81,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const response = await fetch(`https://api.weatherapi.com/v1/search.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(query)}`);
             const suggestions = await response.json();
             if (suggestions.length == 0) {
-                suggestionsList.innerHTML = '';
-                suggestionsList.style.display = 'none';
+                suggestionsList.innerHTML =  `<li>Location Not Found</li>`;
                 return;
             }
             suggestionsList.innerHTML = suggestions.map(suggestion =>
@@ -66,13 +91,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             suggestionsList.querySelectorAll('li').forEach(item => {
                 item.addEventListener('click', async () => {
-                    searchInput.value = item.textContent;
-                    suggestionsList.innerHTML = '';
-                    suggestionsList.style.display = 'none';
                     currentLocationName =item.textContent;
-                    currentLocatioId = item.id;
+                    currentLocationId = item.id;
+                    searchInput.value = currentLocationName;
+                    closeSuggestions();
                     const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(currentLocatioId)}&days=3&aqi=no&alerts=yes`);
-                    currentLocatioData = await response.json();
+                    currentLocationData = await response.json();
                     updateDetails();
                 });
             });
@@ -87,10 +111,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('click', (event) => {
         if (!searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
             searchInput.value = currentLocationName;
-            suggestionsList.innerHTML = '';
-            suggestionsList.style.display = 'none';
+            closeSuggestions();
         }
     });
+
+    document.getElementById('btnLocationSelector').addEventListener('click',() => {
+        document.getElementById('popup-overlay').style.display = 'flex';       
+    });
+
+    document.getElementById('btnClose').addEventListener('click',() => {
+        document.getElementById('popup-overlay').style.display = 'none';
+           
+    }
+
+    )
 });
 
 
