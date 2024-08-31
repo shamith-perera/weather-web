@@ -3,6 +3,8 @@ let currentLocationName;
 let currentLocationId;
 let map;
 let marker;
+let lati;
+let long
 
 function updateDetails(){
     const elements = document.querySelectorAll('.fade-target'); 
@@ -21,26 +23,45 @@ function updateDetails(){
 
 function initMap() {
    
-    map = L.map('map').setView([51.505, -0.09], 13); 
+    map = L.map('map', {
+        center: [0, 0],
+        zoom: 5,       
+        minZoom: 2,    
+    });
+    
 
     
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    
-    map.on('click', function(e) {
-        if (marker) {
-            marker.setLatLng(e.latlng); 
-        } else {
-            marker = L.marker(e.latlng).addTo(map); 
-        }
-        console.log(`Selected location: ${e.latlng.lat}, ${e.latlng.lng}`);
+    var southWest = L.latLng(-90, -180);
+            var northEast = L.latLng(90, 180);
+            var bounds = L.latLngBounds(southWest, northEast);
+
+           
+            map.setMaxBounds(bounds);
+            map.on('drag', function() {
+                map.panInsideBounds(bounds);
+            });
+
+    marker = L.marker({
+        lat :lati ,
+        lng : long
+     }).addTo(map);
+    map.on('click',async function(e) {
+        marker.setLatLng(e.latlng); 
+        const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(e.latlng.lat)},${encodeURIComponent(e.latlng.lng)}&days=3&aqi=no&alerts=yes`);
+         let tempResponse  = await response.json();
+         if(tempResponse.location == null){
+            return;
+         }
+         currentLocationData = tempResponse;
+        currentLocationName = currentLocationData.location.name + ", " + currentLocationData.location.country;
+        document.getElementById('selectedLocationNameInMap').innerText = currentLocationName;
     });
 }
 document.addEventListener('DOMContentLoaded', async () => {
-
-initMap();  
 
     const searchInput = document.getElementById('searchInput');
     const suggestionsList = document.getElementById('suggestionsList');
@@ -48,9 +69,12 @@ initMap();
     currentLocationId = "id:"+2842265;
     const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(currentLocationId)}&days=3&aqi=no&alerts=yes`);
     currentLocationData = await response.json();
+    lati = currentLocationData.location.lat;
+    long = currentLocationData.location.lon;
     currentLocationName =currentLocationData.location.name + ", " + currentLocationData.location.country;
     searchInput.value = currentLocationName;
     updateDetails();
+   
    
     function adjustSuggestionsListWidth() {
         const inputWidth = searchInput.getBoundingClientRect().width;
@@ -95,9 +119,10 @@ initMap();
                     currentLocationId = item.id;
                     searchInput.value = currentLocationName;
                     closeSuggestions();
-                    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(currentLocatioId)}&days=3&aqi=no&alerts=yes`);
+                    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(currentLocationId)}&days=3&aqi=no&alerts=yes`);
                     currentLocationData = await response.json();
                     updateDetails();
+                    placeMapMarker;
                 });
             });
 
@@ -116,16 +141,32 @@ initMap();
     });
 
     document.getElementById('btnLocationSelector').addEventListener('click',() => {
-        document.getElementById('popup-overlay').style.display = 'flex';       
+        document.getElementById('popup-overlay').style.display = 'flex';     
+        if (!map) {
+            initMap();
+        } 
+        document.getElementById('selectedLocationNameInMap').innerText = currentLocationName;
+        placeMapMarker();
     });
 
     document.getElementById('btnClose').addEventListener('click',() => {
         document.getElementById('popup-overlay').style.display = 'none';
+        updateDetails();
            
     }
 
     )
 });
+
+function placeMapMarker(){
+    lati = currentLocationData.location.lat;
+    long = currentLocationData.location.lon;
+    map.setView([lati,long],5);
+     marker.setLatLng({
+        lat :lati ,
+        lng : long
+     })
+ }
 
 
 
