@@ -95,6 +95,7 @@ span{
     cursor: pointer;
     font-weight: 500;
     background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
 
 .suggestions-list li:hover {

@@ -1,4 +1,5 @@
 let currentLocatioData;
+let currentLocationName;
 
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
@@ -12,8 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     adjustSuggestionsListWidth();
     window.addEventListener('resize', adjustSuggestionsListWidth);
 
-    searchInput.addEventListener('input', async (event) => {
-        const query = event.target.value;
+    searchInput.addEventListener('click',  () => {
+        searchInput.value = '';
+    })
+
+    searchInput.addEventListener('input', async () => {
+        const query = searchInput.value;
 
         if (query.length == 0) {
             suggestionsList.innerHTML = '';
@@ -36,11 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             suggestionsList.querySelectorAll('li').forEach(item => {
                 item.addEventListener('click', async () => {
-                    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(item.id)}&days=3&aqi=no&alerts=yes`);
-                    currentLocatioData = await response.json();
-                    console.log(currentLocatioData);
                     searchInput.value = item.textContent;
                     suggestionsList.innerHTML = '';
+                    currentLocationName =item.textContent;
+                    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(item.id)}&days=3&aqi=no&alerts=yes`);
+                    currentLocatioData = await response.json();
+
                 });
             });
 
@@ -53,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('click', (event) => {
         if (!searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
+            searchInput.value = currentLocationName;
             suggestionsList.innerHTML = '';
             suggestionsList.style.display = 'none';
         }
