@@ -122,7 +122,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(currentLocationId)}&days=3&aqi=no&alerts=yes`);
                     currentLocationData = await response.json();
                     updateDetails();
-                    placeMapMarker;
                 });
             });
 
