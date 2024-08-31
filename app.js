@@ -1,10 +1,35 @@
 let currentLocatioData;
 let currentLocationName;
+let currentLocatioId;
 
-document.addEventListener('DOMContentLoaded', () => {
+function updateDetails(){
+    const elements = document.querySelectorAll('.fade-target'); 
+    elements.forEach(element => {
+        element.classList.remove('fade-in');
+        void element.offsetWidth;
+        element.classList.add('fade-in');
+    });
+
+    document.getElementById('currentTemp').innerText = Math.round(currentLocatioData.current.temp_c) + "°";
+    document.getElementById('currentCondtionIcon').src = currentLocatioData.current.condition.icon;
+    document.getElementById('currentStatusText').innerText = currentLocatioData.current.condition.text;
+    document.getElementById('currentFeelsLikeText').innerText = "Feels Like " + Math.round(currentLocatioData.current.feelslike_c)+"°";
+    document.getElementById('highAndLowTemp').innerText = "High " + Math.round(currentLocatioData.forecast.forecastday[0].day.maxtemp_c) + "° | Low " + Math.round(currentLocatioData.forecast.forecastday[0].day.mintemp_c) + "°";
+
+   
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
     const searchInput = document.getElementById('searchInput');
     const suggestionsList = document.getElementById('suggestionsList');
 
+    currentLocatioId = "id:"+2842265;
+    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(currentLocatioId)}&days=3&aqi=no&alerts=yes`);
+    currentLocatioData = await response.json();
+    currentLocationName =currentLocatioData.location.name + ", " + currentLocatioData.location.country;
+    searchInput.value = currentLocationName;
+    updateDetails();
+   
     function adjustSuggestionsListWidth() {
         const inputWidth = searchInput.getBoundingClientRect().width;
         suggestionsList.style.width = `${inputWidth - 10}px`;
@@ -43,10 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', async () => {
                     searchInput.value = item.textContent;
                     suggestionsList.innerHTML = '';
+                    suggestionsList.style.display = 'none';
                     currentLocationName =item.textContent;
-                    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(item.id)}&days=3&aqi=no&alerts=yes`);
+                    currentLocatioId = item.id;
+                    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(currentLocatioId)}&days=3&aqi=no&alerts=yes`);
                     currentLocatioData = await response.json();
-
+                    updateDetails();
                 });
             });
 
@@ -65,3 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+

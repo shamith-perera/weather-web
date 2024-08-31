@@ -19,7 +19,7 @@ span{
 }
 
 .custom-select {
-    width: 140px; 
+    width: 130px; 
     font-size: 13px; 
     border-radius: 5px;
     background-color: #E8F2FE;
@@ -48,7 +48,7 @@ span{
     border-radius: 20px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
     text-align: center;
-    font-size: larger;
+    font-size: medium;
     color: #363C48;
     background-color: #FFFEEA;
 }
@@ -100,4 +100,70 @@ span{
 
 .suggestions-list li:hover {
     background-color: #f0f0f0;
+}
+
+#nowText{
+    color: #122438;
+}
+.currentWeatherDetails{
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: left;
+}
+
+.weatherStatus{
+    display: flex;
+    flex-direction: row;
+}
+
+#currentTemp{
+    font-size: 320%;
+    color: #001F34;
+
+}
+
+#currentCondtionIcon{
+    width: 80px;
+    height: 80px;
+}
+
+.weatherStatusText{
+    justify-content: right;
+    align-items: right;
+    text-align: right;
+    padding-top: 30px;
+    line-height: 0.5;
+    text-wrap: nowrap;
+}
+
+#currentStatusText{
+    font-size: 110%;
+    color: #021323;
+}
+
+#currentFeelsLikeText{
+    font-size: 80%;
+    color: #6D7781;
+}
+
+#highAndLowTemp{
+    font-size: 80%;
+    color: #6D7781;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+
+.fade-in {
+    opacity: 0; 
+    animation: fadeIn 1s ease-in; 
+    animation-fill-mode: both;
 }
