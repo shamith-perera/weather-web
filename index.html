@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark custom-bg pt-3 ps-md-5 pe-md-5 ps-sm-1 pe-sm-1">
         <div class="container-fluid">
@@ -16,66 +18,75 @@
                 <img src="img/websiteicon.png" alt="Website Icon" class="me-2 mt-1 icon-size">
                 <span class="brand-primary">weather.</span><span class="brand-secondary">app</span>
             </a>
-            <div class="d-flex ms-auto">
+            <!-- <div class="d-flex ms-auto">
                 <select class="form-select custom-select" aria-label="Temperature unit selector">
                     <option value="fahrenheit">Fahrenheit</option>
                     <option value="celsius">Celsius</option>
                 </select>
-            </div>
+            </div> -->
         </div>
     </nav>
-    
+
     <div class="container">
         <div class="search-bar-container">
             <input type="text" class="form-control search-bar" placeholder="Search..." id="searchInput">
             <ul id="suggestionsList" class="suggestions-list"></ul>
-            <button class="location-btn" id="btnLocationSelector"><img src="img/location.png" alt="location-icon" class="location-btn-icon"></button>
+            <button class="location-btn" id="btnLocationSelector"><img src="img/location.png" alt="location-icon"
+                    class="location-btn-icon"></button>
         </div>
 
 
-    <div class="container fade-target">
-        <div class="row">
-            <div class="col-md-4 col-sm-10">
-                <div class="currentWeatherDetails mt-3 ms-2">
-                    <h4 id="nowText">Now</h4>
-                    <div class="weatherStatus">
-                        <p id="currentTemp"></p>
-                        <img id="currentCondtionIcon" alt="currentCondition" >
-                        <div class="weatherStatusText ms-auto">
-                            <p id="currentStatusText"></p>
-                            <p id="currentFeelsLikeText"></p>
+        <div class="container fade-target">
+            <div class="row">
+                <div class="col-md-4 col-sm-10">
+                    <div class="currentWeatherDetails mt-3 ms-2">
+                        <h4 id="nowText">Now</h4>
+                        <div class="weatherStatus">
+                            <p id="currentTemp"></p>
+                            <img id="currentCondtionIcon" alt="currentCondition">
+                            <div class="weatherStatusText ms-auto">
+                                <p id="currentStatusText"></p>
+                                <p id="currentFeelsLikeText"></p>
+                            </div>
                         </div>
+                        <p id="highAndLowTemp">High 37 | Low 26</p>
+
+
                     </div>
-                    <p id="highAndLowTemp">High 37 | Low 26</p>
-                   
 
                 </div>
+            </div>
+            <div id="popup-overlay">
+                <div id="popup-content">
+
+                    <h6 class="align-text-center mb-3 mt-3" id="selectedLocationNameInMap"></h6>
+
+
+
+                    <div id="map"></div>
+                    <button id="btnClose" class="ms-3 me-3 mt-3  mb-3">select</button>
+                </div>
+
 
             </div>
-        </div>
-        <div id="popup-overlay">
-                <div id="popup-content">
-                    
-                        <h6 class="align-text-center mb-3 mt-3" id="selectedLocationNameInMap"></h6>
-                        
-                   
-    
-                    <div id="map"></div>
-                    <button  id="btnClose" class="ms-3 me-3 mt-3  mb-3">select</button>
-                </div>
-    
+
 
         </div>
+
+
 
 
     </div>
-       
+
+    <div id="loading-screen">
+        <div class="loader-icon">
+            <img src="img/website-icon-lg.png" alt="company-icon" id="loading-icon">
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="app.js"></script>
-   
+
 </body>
+
 </html>
-
-
