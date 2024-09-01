@@ -4,7 +4,7 @@ let currentLocationName;
 let map;
 let marker;
 let fetchQuery;
-const $ =document.getElementById.bind(document);
+const $ = document.getElementById.bind(document);
 const searchInput = $('searchInput');
 const suggestionsList = $('suggestionsList');
 
@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     startLoadingAnimation();
     adjustSuggestionsListWidth();
     askForLocation();
-
 });
 
 function askForLocation() {
@@ -21,8 +20,8 @@ function askForLocation() {
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 try {
-                    await fetchData(fetchQuery = position.coords.latitude + "," + position.coords.longitude);
-                    searchInput.value = (currentLocationName = currentLocationData.location.name + ", " + currentLocationData.location.country);
+                    await fetchData(fetchQuery = `${position.coords.latitude},${position.coords.longitude}`);
+                    searchInput.value = currentLocationName = `${currentLocationData.location.name}, ${currentLocationData.location.country}`;
                     updateDetails();
                     playResettingAnimations();
                 } catch (error) {
@@ -37,11 +36,11 @@ function askForLocation() {
 }
 
 function updateDetails() {
-   $('currentTemp').innerText = Math.round(currentLocationData.current.temp_c) + "°";
-   $('currentCondtionIcon').src = currentLocationData.current.condition.icon;
-   $('currentStatusText').innerText = currentLocationData.current.condition.text;
-   $('currentFeelsLikeText').innerText = "Feels Like " + Math.round(currentLocationData.current.feelslike_c) + "°";
-   $('highAndLowTemp').innerText = "High " + Math.round(currentLocationData.forecast.forecastday[0].day.maxtemp_c) + "° | Low " + Math.round(currentLocationData.forecast.forecastday[0].day.mintemp_c) + "°";
+    $('currentTemp').innerText = `${Math.round(currentLocationData.current.temp_c)}°`;
+    $('currentCondtionIcon').src = currentLocationData.current.condition.icon;
+    $('currentStatusText').innerText = currentLocationData.current.condition.text;
+    $('currentFeelsLikeText').innerText = `Feels Like ${Math.round(currentLocationData.current.feelslike_c)}°`;
+    $('highAndLowTemp').innerText = `High ${Math.round(currentLocationData.forecast.forecastday[0].day.maxtemp_c)}° | Low ${Math.round(currentLocationData.forecast.forecastday[0].day.mintemp_c)}°`;
 }
 
 async function fetchData() {
@@ -98,8 +97,8 @@ function initMap() {
     map.on('click', async function (e) {
         marker.setLatLng(e.latlng);
         try {
-            await fetchData(fetchQuery = e.latlng.lat + "," + e.latlng.lng);
-            $('selectedLocationNameInMap').innerText = (currentLocationName = currentLocationData.location.name + ", " + currentLocationData.location.country);
+            await fetchData(fetchQuery = `${e.latlng.lat},${e.latlng.lng}`);
+            $('selectedLocationNameInMap').innerText = currentLocationName = `${currentLocationData.location.name}, ${currentLocationData.location.country}`;
         } catch (error) {
             console.log(error);
         }
@@ -109,7 +108,7 @@ function initMap() {
 function startLoadingAnimation() {
     document.body.classList.add('no-scroll');
     setTimeout(function () {
-        const loadingScreen =$('loading-screen');
+        const loadingScreen = $('loading-screen');
         loadingScreen.classList.add('break-animation');
         setTimeout(function () {
             loadingScreen.classList.add('hidden');
@@ -149,7 +148,7 @@ async function loadDefaultLocationData() {
         }
 
     }
-    searchInput.value =  (currentLocationName = currentLocationData.location.name + ", " + currentLocationData.location.country);
+    searchInput.value = currentLocationName = `${currentLocationData.location.name}, ${currentLocationData.location.country}`;
     playResettingAnimations();
     updateDetails();
 }
@@ -163,7 +162,7 @@ searchInput.addEventListener('click', () => {
 searchInput.addEventListener('input', async () => {
     const query = searchInput.value;
 
-    if (query.length < 3) {
+    if (query.length == 0) {
         closeSuggestions();
         return;
     }
@@ -172,11 +171,11 @@ searchInput.addEventListener('input', async () => {
         const response = await fetch(`https://api.weatherapi.com/v1/search.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(query)}`);
         const suggestions = await response.json();
         if (suggestions.length == 0) {
-            suggestionsList.innerHTML = `<li><i>location not found</i></li>`;
+            suggestionsList.innerHTML = `<li><i>no suggestions...</i></li>`;
             return;
         }
         suggestionsList.innerHTML = suggestions.map(suggestion =>
-            `<li id=${"id:" + suggestion.id}>${suggestion.name + ", " + suggestion.country}</li>`
+            `<li id="id:${suggestion.id}">${suggestion.name}, ${suggestion.country}</li>`
         ).join('');
 
 
@@ -203,14 +202,14 @@ searchInput.addEventListener('input', async () => {
 
 
 document.addEventListener('click', (event) => {
-    if (!searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
+    if (suggestionsList.style.display == 'block' && !searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
         searchInput.value = currentLocationName;
         closeSuggestions();
     }
 });
 
 document.getElementById('btnLocationSelector').addEventListener('click', () => {
-   $('popup-overlay').style.display = 'flex';
+    $('popup-overlay').style.display = 'flex';
     if (map) {
         map.remove();
     }
@@ -219,14 +218,12 @@ document.getElementById('btnLocationSelector').addEventListener('click', () => {
     placeMapMarker();
 });
 
-document.getElementById('btnClose').addEventListener('click', () => {
-   $('popup-overlay').style.display = 'none';
+document.getElementById('btnSelect').addEventListener('click', () => {
+    $('popup-overlay').style.display = 'none';
     playResettingAnimations();
+    searchInput.value = currentLocationName;
     updateDetails();
-
-}
-
-)
+})
 
 
 

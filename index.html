@@ -12,6 +12,7 @@
 </head>
 
 <body>
+    <!-- navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark custom-bg pt-3 ps-md-5 pe-md-5 ps-sm-1 pe-sm-1">
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">
@@ -28,16 +29,17 @@
     </nav>
 
     <div class="container">
+        <!-- search bar -->
         <div class="search-bar-container">
-            <input type="text" class="form-control search-bar" placeholder="Search..." id="searchInput">
+            <input type="text" class="form-control search-bar" placeholder="Search..." id="searchInput" autocomplete="off">
             <ul id="suggestionsList" class="suggestions-list"></ul>
             <button class="location-btn" id="btnLocationSelector"><img src="img/location.png" alt="location-icon"
                     class="location-btn-icon"></button>
         </div>
 
-
         <div class="container fade-target">
             <div class="row">
+                <!-- current weather conditions -->
                 <div class="col-md-4 col-sm-10">
                     <div class="currentWeatherDetails mt-3 ms-2">
                         <h4 id="nowText">Now</h4>
@@ -50,34 +52,22 @@
                             </div>
                         </div>
                         <p id="highAndLowTemp">High 37 | Low 26</p>
-
-
                     </div>
-
                 </div>
             </div>
+
+            <!-- location picker popup -->
             <div id="popup-overlay">
                 <div id="popup-content">
-
                     <h6 class="align-text-center mb-3 mt-3" id="selectedLocationNameInMap"></h6>
-
-
-
                     <div id="map"></div>
-                    <button id="btnClose" class="ms-3 me-3 mt-3  mb-3">select</button>
+                    <button id="btnSelect" class="ms-3 me-3 mt-3  mb-3">select</button>
                 </div>
-
-
             </div>
-
-
         </div>
-
-
-
-
     </div>
 
+    <!-- loading screen -->
     <div id="loading-screen">
         <div class="loader-icon">
             <img src="img/website-icon-lg.png" alt="company-icon" id="loading-icon">
