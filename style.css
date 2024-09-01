@@ -142,8 +142,7 @@ span {
     align-items: right;
     text-align: right;
     padding-top: 30px;
-    line-height: 0.5;
-    text-wrap: nowrap;
+    line-height: 1;
 }
 
 #currentStatusText {

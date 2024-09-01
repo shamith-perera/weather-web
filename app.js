@@ -1,10 +1,19 @@
 let currentLocationData;
 let currentLocationName;
-let currentLocationId;
 let map;
 let marker;
 let lati;
 let long;
+const searchInput = document.getElementById('searchInput');
+const suggestionsList = document.getElementById('suggestionsList');
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadDefaultLocationData();
+    startLoadingAnimation();
+    adjustSuggestionsListWidth();
+
+});
+
 
 function updateDetails() {
     const elements = document.querySelectorAll('.fade-target');
@@ -48,20 +57,20 @@ function initMap() {
     marker = L.marker([0, 0]).addTo(map);
     map.on('click', async function (e) {
         marker.setLatLng(e.latlng);
-        const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(e.latlng.lat)},${encodeURIComponent(e.latlng.lng)}&days=3&aqi=no&alerts=yes`);
-        let tempResponse = await response.json();
-        if (tempResponse.location == null) {
-            return;
-        }
-        currentLocationData = tempResponse;
-        currentLocationName = currentLocationData.location.name + ", " + currentLocationData.location.country;
-        document.getElementById('selectedLocationNameInMap').innerText = currentLocationName;
+        try{
+            const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(e.latlng.lat)},${encodeURIComponent(e.latlng.lng)}&days=3&aqi=no&alerts=yes`);
+            const tempResponse = await response.json();
+            currentLocationData = tempResponse;
+            currentLocationName = currentLocationData.location.name + ", " + currentLocationData.location.country;
+            document.getElementById('selectedLocationNameInMap').innerText = currentLocationName;
+        }catch (error){
+            console.log(error);
+        }      
     });
 }
-document.addEventListener('DOMContentLoaded', async () => {
+
+function startLoadingAnimation() {
     document.body.classList.add('no-scroll');
-
-
     setTimeout(function () {
         const loadingScreen = document.getElementById('loading-screen');
         loadingScreen.classList.add('break-animation');
@@ -69,104 +78,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             loadingScreen.classList.add('hidden');
             document.body.classList.remove('no-scroll');
         });
-    }, 1000);
+    }, 100);
+}
 
-    const searchInput = document.getElementById('searchInput');
-    const suggestionsList = document.getElementById('suggestionsList');
+function adjustSuggestionsListWidth() {
+    const inputWidth = searchInput.getBoundingClientRect().width;
+    suggestionsList.style.width = `${inputWidth - 10}px`;
+}
 
-
-
-    currentLocationId = "id:" + 2842265;
-    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(currentLocationId)}&days=3&aqi=no&alerts=yes`);
-    currentLocationData = await response.json();
-    lati = currentLocationData.location.lat;
-    long = currentLocationData.location.lon;
-    currentLocationName = currentLocationData.location.name + ", " + currentLocationData.location.country;
-    searchInput.value = currentLocationName;
-    updateDetails();
-
-
-    function adjustSuggestionsListWidth() {
-        const inputWidth = searchInput.getBoundingClientRect().width;
-        suggestionsList.style.width = `${inputWidth - 10}px`;
-    }
-
-    function closeSuggestions() {
-        suggestionsList.innerHTML = '';
-        suggestionsList.style.display = 'none';
-    }
-
-    adjustSuggestionsListWidth();
-    window.addEventListener('resize', adjustSuggestionsListWidth);
-
-    searchInput.addEventListener('click', () => {
-        searchInput.value = '';
-    })
-
-    searchInput.addEventListener('input', async () => {
-        const query = searchInput.value;
-
-        if (query.length < 3) {
-            closeSuggestions();
-            return;
-        }
-        suggestionsList.style.display = 'block';
-        try {
-            const response = await fetch(`https://api.weatherapi.com/v1/search.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(query)}`);
-            const suggestions = await response.json();
-            if (suggestions.length == 0) {
-                suggestionsList.innerHTML = `<li>Location Not Found</li>`;
-                return;
-            }
-            suggestionsList.innerHTML = suggestions.map(suggestion =>
-                `<li id=${"id:" + suggestion.id}>${suggestion.name + ", " + suggestion.country}</li>`
-            ).join('');
-
-
-            suggestionsList.querySelectorAll('li').forEach(item => {
-                item.addEventListener('click', async () => {
-                    currentLocationName = item.textContent;
-                    currentLocationId = item.id;
-                    searchInput.value = currentLocationName;
-                    closeSuggestions();
-                    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(currentLocationId)}&days=3&aqi=no&alerts=yes`);
-                    currentLocationData = await response.json();
-                    updateDetails();
-                });
-            });
-
-        } catch (error) {
-            console.error('Error fetching suggestions:', error);
-            suggestionsList.innerHTML = '<li>Error fetching suggestions</li>';
-        }
-    });
-
-
-    document.addEventListener('click', (event) => {
-        if (!searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
-            searchInput.value = currentLocationName;
-            closeSuggestions();
-        }
-    });
-
-    document.getElementById('btnLocationSelector').addEventListener('click', () => {
-        document.getElementById('popup-overlay').style.display = 'flex';
-        if (map) {
-            map.remove();
-        }
-        initMap();
-        document.getElementById('selectedLocationNameInMap').innerText = currentLocationName;
-        placeMapMarker();
-    });
-
-    document.getElementById('btnClose').addEventListener('click', () => {
-        document.getElementById('popup-overlay').style.display = 'none';
-        updateDetails();
-
-    }
-
-    )
-});
+function closeSuggestions() {
+    suggestionsList.innerHTML = '';
+    suggestionsList.style.display = 'none';
+}
 
 function placeMapMarker() {
     lati = currentLocationData.location.lat;
@@ -174,6 +97,107 @@ function placeMapMarker() {
     map.setView([lati, long], 5);
     marker.setLatLng([lati, long]);
 }
+
+async function loadDefaultLocationData() {
+    try{
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        const response = await fetch(` https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(ipData.ip)}&days=3&aqi=no&alerts=yes`);
+        currentLocationData = await response.json();
+    } catch (error) {
+        try{
+            const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=id:2842265&days=3&aqi=no&alerts=yes`);
+            currentLocationData = await response.json();
+        }catch(error){
+            console.log(error);
+            return;
+        }
+       
+    }
+    lati = currentLocationData.location.lat;
+    long = currentLocationData.location.lon;
+    currentLocationName = currentLocationData.location.name + ", " + currentLocationData.location.country;
+    searchInput.value = currentLocationName;
+    updateDetails();
+}
+
+window.addEventListener('resize', adjustSuggestionsListWidth);
+
+searchInput.addEventListener('click', () => {
+    searchInput.value = '';
+})
+
+searchInput.addEventListener('input', async () => {
+    const query = searchInput.value;
+
+    if (query.length < 3) {
+        closeSuggestions();
+        return;
+    }
+    suggestionsList.style.display = 'block';
+    try {
+        const response = await fetch(`https://api.weatherapi.com/v1/search.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(query)}`);
+        const suggestions = await response.json();
+        if (suggestions.length == 0) {
+            suggestionsList.innerHTML = `<li><i>location not found</i></li>`;
+            return;
+        }
+        suggestionsList.innerHTML = suggestions.map(suggestion =>
+            `<li id=${"id:" + suggestion.id}>${suggestion.name + ", " + suggestion.country}</li>`
+        ).join('');
+
+
+        suggestionsList.querySelectorAll('li').forEach(item => {
+            item.addEventListener('click', async () => {
+                currentLocationName = item.textContent;
+                searchInput.value = currentLocationName;
+                closeSuggestions();
+                try{
+                    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(item.id)}&days=3&aqi=no&alerts=yes`);
+                    currentLocationData = await response.json();
+                    updateDetails();
+                }catch (eroor){
+                    console.log(error);         
+                }
+               
+            });
+        });
+
+    } catch (error) {
+        console.log(error);
+        suggestionsList.innerHTML = '<li>Error fetching suggestions</li>';
+    }
+});
+
+
+document.addEventListener('click', (event) => {
+    if (!searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
+        searchInput.value = currentLocationName;
+        closeSuggestions();
+    }
+});
+
+document.getElementById('btnLocationSelector').addEventListener('click', () => {
+    document.getElementById('popup-overlay').style.display = 'flex';
+    if (map) {
+        map.remove();
+    }
+    initMap();
+    document.getElementById('selectedLocationNameInMap').innerText = currentLocationName;
+    placeMapMarker();
+});
+
+document.getElementById('btnClose').addEventListener('click', () => {
+    document.getElementById('popup-overlay').style.display = 'none';
+    updateDetails();
+
+}
+
+)
+
+
+
+
 
 
 
