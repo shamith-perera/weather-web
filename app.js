@@ -5,13 +5,13 @@ let map;
 let marker;
 let fetchQuery;
 const $ = document.getElementById.bind(document);
-const searchInput = $('searchInput');
-const suggestionsList = $('suggestionsList');
+const searchField = $('txtSearch');
+const suggestionsDropdown = $('dropdownSuggestions');
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadDefaultLocationData();
     startLoadingAnimation();
-    adjustSuggestionsListWidth();
+    adjustsuggestionsDropdownWidth();
     askForLocation();
 });
 
@@ -21,7 +21,7 @@ function askForLocation() {
             async (position) => {
                 try {
                     await fetchData(fetchQuery = `${position.coords.latitude},${position.coords.longitude}`);
-                    searchInput.value = currentLocationName = `${currentLocationData.location.name}, ${currentLocationData.location.country}`;
+                    searchField.value = currentLocationName = `${currentLocationData.location.name}, ${currentLocationData.location.country}`;
                     updateDetails();
                     playResettingAnimations();
                 } catch (error) {
@@ -36,11 +36,11 @@ function askForLocation() {
 }
 
 function updateDetails() {
-    $('currentTemp').innerText = `${Math.round(currentLocationData.current.temp_c)}°`;
-    $('currentCondtionIcon').src = currentLocationData.current.condition.icon;
+    $('lblCurrentTemp').innerText = `${Math.round(currentLocationData.current.temp_c)}°`;
+    $('iconCurrentStatus').src = currentLocationData.current.condition.icon;
     $('currentStatusText').innerText = currentLocationData.current.condition.text;
-    $('currentFeelsLikeText').innerText = `Feels Like ${Math.round(currentLocationData.current.feelslike_c)}°`;
-    $('highAndLowTemp').innerText = `High ${Math.round(currentLocationData.forecast.forecastday[0].day.maxtemp_c)}° | Low ${Math.round(currentLocationData.forecast.forecastday[0].day.mintemp_c)}°`;
+    $('lblCurrentFeelslike').innerText = `Feels Like ${Math.round(currentLocationData.current.feelslike_c)}°`;
+    $('lblCurrentTempRange').innerText = `High ${Math.round(currentLocationData.forecast.forecastday[0].day.maxtemp_c)}° | Low ${Math.round(currentLocationData.forecast.forecastday[0].day.mintemp_c)}°`;
 }
 
 async function fetchData() {
@@ -108,23 +108,23 @@ function initMap() {
 function startLoadingAnimation() {
     document.body.classList.add('no-scroll');
     setTimeout(function () {
-        const loadingScreen = $('loading-screen');
-        loadingScreen.classList.add('break-animation');
+        const loadingScreen = $('overlayLoading');
+        loadingScreen.classList.add('animationBreakLoading');
         setTimeout(function () {
-            loadingScreen.classList.add('hidden');
+            loadingScreen.classList.add('display-0');
             document.body.classList.remove('no-scroll');
         });
     }, 100);
 }
 
-function adjustSuggestionsListWidth() {
-    const inputWidth = searchInput.getBoundingClientRect().width;
-    suggestionsList.style.width = `${inputWidth - 10}px`;
+function adjustsuggestionsDropdownWidth() {
+    const inputWidth = searchField.getBoundingClientRect().width;
+    suggestionsDropdown.style.width = `${inputWidth - 10}px`;
 }
 
 function closeSuggestions() {
-    suggestionsList.innerHTML = '';
-    suggestionsList.style.display = 'none';
+    suggestionsDropdown.innerHTML = '';
+    suggestionsDropdown.style.display = 'none';
 }
 
 function placeMapMarker() {
@@ -148,40 +148,40 @@ async function loadDefaultLocationData() {
         }
 
     }
-    searchInput.value = currentLocationName = `${currentLocationData.location.name}, ${currentLocationData.location.country}`;
+    searchField.value = currentLocationName = `${currentLocationData.location.name}, ${currentLocationData.location.country}`;
     playResettingAnimations();
     updateDetails();
 }
 
-window.addEventListener('resize', adjustSuggestionsListWidth);
+window.addEventListener('resize', adjustsuggestionsDropdownWidth);
 
-searchInput.addEventListener('click', () => {
-    searchInput.value = '';
+searchField.addEventListener('click', () => {
+    searchField.value = '';
 })
 
-searchInput.addEventListener('input', async () => {
-    const query = searchInput.value;
+searchField.addEventListener('input', async () => {
+    const query = searchField.value;
 
     if (query.length == 0) {
         closeSuggestions();
         return;
     }
-    suggestionsList.style.display = 'block';
+    suggestionsDropdown.style.display = 'block';
     try {
         const response = await fetch(`https://api.weatherapi.com/v1/search.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(query)}`);
         const suggestions = await response.json();
         if (suggestions.length == 0) {
-            suggestionsList.innerHTML = `<li><i>no suggestions...</i></li>`;
+            suggestionsDropdown.innerHTML = `<li><i>no suggestions...</i></li>`;
             return;
         }
-        suggestionsList.innerHTML = suggestions.map(suggestion =>
+        suggestionsDropdown.innerHTML = suggestions.map(suggestion =>
             `<li id="id:${suggestion.id}">${suggestion.name}, ${suggestion.country}</li>`
         ).join('');
 
 
-        suggestionsList.querySelectorAll('li').forEach(item => {
+        suggestionsDropdown.querySelectorAll('li').forEach(item => {
             item.addEventListener('click', async () => {
-                searchInput.value = (currentLocationName = item.textContent);
+                searchField.value = (currentLocationName = item.textContent);
                 closeSuggestions();
                 try {
                     await fetchData(fetchQuery = item.id);
@@ -196,20 +196,20 @@ searchInput.addEventListener('input', async () => {
 
     } catch (error) {
         console.log(error);
-        suggestionsList.innerHTML = '<li>Error fetching suggestions</li>';
+        suggestionsDropdown.innerHTML = '<li>Error fetching suggestions</li>';
     }
 });
 
 
 document.addEventListener('click', (event) => {
-    if (suggestionsList.style.display == 'block' && !searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
-        searchInput.value = currentLocationName;
+    if (suggestionsDropdown.style.display == 'block' && !searchField.contains(event.target) && !suggestionsDropdown.contains(event.target)) {
+        searchField.value = currentLocationName;
         closeSuggestions();
     }
 });
 
-document.getElementById('btnLocationSelector').addEventListener('click', () => {
-    $('popup-overlay').style.display = 'flex';
+document.getElementById('btnLocationPicker').addEventListener('click', () => {
+    $('overlayLocationPicker').style.display = 'flex';
     if (map) {
         map.remove();
     }
@@ -219,9 +219,9 @@ document.getElementById('btnLocationSelector').addEventListener('click', () => {
 });
 
 document.getElementById('btnSelect').addEventListener('click', () => {
-    $('popup-overlay').style.display = 'none';
+    $('overlayLocationPicker').style.display = 'none';
     playResettingAnimations();
-    searchInput.value = currentLocationName;
+    searchField.value = currentLocationName;
     updateDetails();
 })
 

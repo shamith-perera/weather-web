@@ -1,18 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-html {
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-}
 
 body {
     font-family: "Inter", sans-serif;
-    font-weight: bold;
-    font-style: normal;
     background-color: #D5E4F7;
 }
 
 /* navbar */
+.custom-bg {
+    background-color: #D5E4F7;
+}
 
 .brand-primary {
     color: black;
@@ -22,147 +19,84 @@ body {
     color: #061C8E;
 }
 
-span {
-    font-size: larger;
-}
-
 .custom-select {
-    width: 130px;
-    font-size: 13px;
-    border-radius: 5px;
     background-color: #E8F2FE;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.custom-bg {
-    background-color: #D5E4F7;
-}
-
-.icon-size {
+.custom-navbar-icon-size {
     width: 40px;
     height: 40px;
 }
 
 /* search bar */
 
-.search-bar-container {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.search-bar {
-    font-weight: 500;
-    width: 100%;
+#txtSearch {
     max-width: 600px;
     height: 55px;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    font-size: medium;
     color: #363C48;
     background-color: #FFFEEA;
 }
 
-.suggestions-list {
-    position: absolute;
-    border: 1px solid #ddd;
-    border-top: none;
-    background-color: #fff;
-    margin-top: 63px;
-    max-height: 150px;
-    padding: 0;
-    overflow-y: auto;
-    z-index: 1000;
+#dropdownSuggestions {
     display: none;
-    text-align: center;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid #ddd;
+    margin-top: 58px;
+    max-height: 150px;
     margin-right: 65px;
 }
 
-.suggestions-list li {
+#dropdownSuggestions li {
     padding: 10px;
     cursor: pointer;
     font-weight: 500;
-    background-color: white;
+    background-color: #FFFEEA;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.suggestions-list li:hover {
-    background-color: #f0f0f0;
+#dropdownSuggestions li:hover {
+    background-color: #f4f3e2;
 }
 
 /* map  */
 
-.location-btn {
+#btnLocationPicker {
     background-color: #FFFEEA;
-    border: none;
-    border-radius: 20px;
-    padding: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 60px;
-    margin-left: 10px;
 }
 
-.location-btn:hover {
+#btnLocationPicker:hover {
     background-color: #f4f3e2;
 }
 
 
-.location-btn-icon {
+#iconLocationPicker {
     width: 30px;
     height: 30px;
 }
 
-#popup-overlay {
+#overlayLocationPicker {
     display: none;
-    position: fixed;
-    top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
     background: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
 }
 
-#popup-content {
-    position: absolute;
+#formLocationPicker {
     top: 5%;
-    display: flex;
-    flex-direction: column;
     width: 90%;
     max-width: 700px;
     height: 60%;
     background-color: #D5E4F7;
-    ;
-    border-radius: 20px;
-    align-items: center;
-    justify-content: center;
 }
 
 #map {
     height: 80%;
     width: 90%;
     cursor: pointer;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.popup-operations {
-    display: flex;
-    flex-direction: row;
 }
 
 #btnSelect {
-    border: none;
     padding-left: 10px;
     padding-right: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 20px;
     background-color: rgb(140, 223, 140);
 }
 
@@ -172,52 +106,33 @@ span {
 
 /* current weather conditions */
 
-#nowText {
+#lblNow {
     color: #122438;
 }
 
-.currentWeatherDetails {
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    align-items: left;
-}
-
-.weatherStatus {
-    display: flex;
-    flex-direction: row;
-}
-
-#currentTemp {
+#lblCurrentTemp {
     font-size: 320%;
     color: #001F34;
 
 }
 
-#currentCondtionIcon {
+#iconCurrentStatus {
     width: 80px;
     height: 80px;
 }
 
-.weatherStatusText {
-    justify-content: right;
-    align-items: right;
-    text-align: right;
-    padding-top: 30px;
-    line-height: 1;
-}
 
 #currentStatusText {
     font-size: 110%;
     color: #021323;
 }
 
-#currentFeelsLikeText {
+#lblCurrentFeelslike {
     font-size: 80%;
     color: #6D7781;
 }
 
-#highAndLowTemp {
+#lblCurrentTempRange {
     font-size: 80%;
     color: #6D7781;
 }
@@ -240,29 +155,12 @@ span {
 
 /* loading screen */
 
-#loading-screen {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    z-index: 1500;
+#overlayLoading {
     background-color: #D5E4F7;
 }
 
-.hidden {
-    display: none;
-}
-
-.break-animation {
+.animationBreakLoading {
     animation: break 1s forwards;
-}
-
-#loading-icon {
-    width: 100px;
-    height: 100px;
 }
 
 @keyframes break {
