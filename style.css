@@ -1,181 +1,180 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 body {
-    font-family: "Inter", sans-serif;
-    background-color: #D5E4F7;
+  font-family: "Inter", sans-serif;
+  background-color: #d5e4f7;
 }
 
 /* navbar */
 .custom-bg {
-    background-color: #D5E4F7;
+  background-color: #d5e4f7;
 }
 
 .brand-primary {
-    color: black;
+  color: black;
 }
 
 .brand-secondary {
-    color: #061C8E;
+  color: #061c8e;
 }
 
 .custom-select {
-    background-color: #E8F2FE;
+  background-color: #e8f2fe;
 }
 
 .custom-navbar-icon-size {
-    width: 40px;
-    height: 40px;
+  width: 40px;
+  height: 40px;
 }
 
 /* search bar */
 
 #txtSearch {
-    max-width: 600px;
-    height: 55px;
-    color: #363C48;
-    background-color: #FFFEEA;
+  max-width: 600px;
+  height: 55px;
+  color: #363c48;
+  background-color: #fffeea;
 }
 
 #dropdownSuggestions {
-    display: none;
-    border: 1px solid #ddd;
-    margin-top: 58px;
-    max-height: 150px;
-    margin-right: 65px;
+  display: none;
+  border: 1px solid #ddd;
+  margin-top: 58px;
+  max-height: 150px;
+  margin-right: 65px;
 }
 
 #dropdownSuggestions li {
-    padding: 10px;
-    cursor: pointer;
-    font-weight: 500;
-    background-color: #FFFEEA;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  background-color: #fffeea;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #dropdownSuggestions li:hover {
-    background-color: #f4f3e2;
+  background-color: #f4f3e2;
+}
+
+#suggestionMessage {
+  color: rgb(231, 119, 119);
 }
 
 /* map  */
 
 #btnLocationPicker {
-    background-color: #FFFEEA;
-    width: 60px;
+  background-color: #fffeea;
+  width: 55px;
 }
 
 #btnLocationPicker:hover {
-    background-color: #f4f3e2;
-}
-
-
-#iconLocationPicker {
-    width: 30px;
-    height: 30px;
+  background-color: #f4f3e2;
 }
 
 #overlayLocationPicker {
-    display: none;
-    left: 0;
-    background: rgba(0, 0, 0, 0.7);
+  display: none;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
 }
 
 #formLocationPicker {
-    top: 5%;
-    width: 90%;
-    max-width: 700px;
-    height: 60%;
-    background-color: #D5E4F7;
+  top: 5%;
+  width: 90%;
+  max-width: 700px;
+  height: 60%;
+  background-color: #d5e4f7;
 }
 
 #map {
-    height: 80%;
-    width: 90%;
-    cursor: pointer;
+  height: 80%;
+  width: 90%;
+  cursor: pointer;
 }
 
 #btnSelect {
-    padding-left: 10px;
-    padding-right: 10px;
-    background-color: rgb(140, 223, 140);
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: rgb(140, 223, 140);
 }
 
 #btnSelect:hover {
-    background-color: rgb(89, 154, 89);
+  background-color: rgb(89, 154, 89);
+}
+
+#btnCloseLocationPicker:hover {
+  background-color: #c4d1e1;
 }
 
 /* current weather conditions */
 
 #lblNow {
-    color: #122438;
+  color: #122438;
 }
 
 #lblCurrentTemp {
-    font-size: 320%;
-    color: #001F34;
-
+  font-size: 320%;
+  color: #001f34;
 }
 
 #iconCurrentStatus {
-    width: 80px;
-    height: 80px;
+  width: 80px;
+  height: 80px;
 }
 
-
-#currentStatusText {
-    font-size: 110%;
-    color: #021323;
+#lblCurrentStatus {
+  font-size: 110%;
+  color: #021323;
 }
 
 #lblCurrentFeelslike {
-    font-size: 80%;
-    color: #6D7781;
+  font-size: 80%;
+  color: #6d7781;
 }
 
 #lblCurrentTempRange {
-    font-size: 80%;
-    color: #6D7781;
+  font-size: 80%;
+  color: #6d7781;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
+  from {
+    opacity: 0;
+  }
 
-    to {
-        opacity: 1;
-    }
+  to {
+    opacity: 1;
+  }
 }
 
 .fade-in {
-    opacity: 0;
-    animation: fadeIn 1s ease-in;
-    animation-fill-mode: both;
+  opacity: 0;
+  animation: fadeIn 1s ease-in;
+  animation-fill-mode: both;
 }
 
 /* loading screen */
 
 #overlayLoading {
-    background-color: #D5E4F7;
+  background-color: #d5e4f7;
 }
 
 .animationBreakLoading {
-    animation: break 1s forwards;
+  animation: break 1s forwards;
 }
 
 @keyframes break {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
 
-    50% {
-        transform: scale(1.5);
-        opacity: 0;
-    }
+  50% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
 
-    100% {
-        transform: scale(0);
-        opacity: 0;
-    }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
 }
