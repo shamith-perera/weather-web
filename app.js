@@ -36,6 +36,33 @@ function retrieveUserLocation() {
   }
 }
 
+async function loadInitialWeatherData() {
+  try {
+    const ipResponse = await fetch("https://api.ipify.org?format=json");
+    const ipData = await ipResponse.json();
+    await fetchData((queryString = ipData.ip));
+  } catch (error) {
+    try {
+      await fetchData((queryString = "id:2842265"));
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  }
+  searchInput.value = locationName = `${weatherData.location.name}, ${weatherData.location.country}`;
+  updateWeatherDetails();
+}
+
+function showLoadingScreen() {
+  document.body.classList.add("no-scroll");
+  setTimeout(function () {
+    const loadingScreen = $("overlayLoading");
+    loadingScreen.classList.add("animationBreakLoading");
+    loadingScreen.classList.add("display-0");
+    document.body.classList.remove("no-scroll");
+  }, 1000);
+}
+
 function updateWeatherDetails() {
   $("lblCurrentTemp").innerText = `${Math.round(weatherData.current.temp_c)}°`;
   $("iconCurrentStatus").src = weatherData.current.condition.icon;
@@ -46,7 +73,7 @@ function updateWeatherDetails() {
 
 async function fetchData() {
   try {
-    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${queryString}&days=3&aqi=no&alerts=yes`);
+    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=76acc3465ca048d19ee133920240211&q=${queryString}&days=3&aqi=no&alerts=yes`);
     weatherData = await response.json();
   } catch (error) {
     throw error;
@@ -96,7 +123,7 @@ function initializeMap() {
     marker.setLatLng(e.latlng);
     try {
       tempQueryString = `${e.latlng.lat},${e.latlng.lng}`;
-      const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(tempQueryString)}&days=3&aqi=no&alerts=yes`);
+      const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=76acc3465ca048d19ee133920240211&q=${encodeURIComponent(tempQueryString)}&days=3&aqi=no&alerts=yes`);
       tempWeatherData = await response.json();
       $("selectedLocationNameInMap").innerText =
         tempLocationName = `${tempWeatherData.location.name}, ${tempWeatherData.location.country}`;
@@ -106,17 +133,7 @@ function initializeMap() {
   });
 }
 
-function showLoadingScreen() {
-  document.body.classList.add("no-scroll");
-  setTimeout(function () {
-    const loadingScreen = $("overlayLoading");
-    loadingScreen.classList.add("animationBreakLoading");
-    setTimeout(function () {
-      loadingScreen.classList.add("display-0");
-      document.body.classList.remove("no-scroll");
-    });
-  }, 100);
-}
+
 
 function adjustSuggestionsListWidth() {
   const inputWidth = searchInput.getBoundingClientRect().width;
@@ -135,23 +152,7 @@ function updateMapMarker() {
   marker.setLatLng([lati, long]);
 }
 
-async function loadInitialWeatherData() {
-  try {
-    const ipResponse = await fetch("https://api.ipify.org?format=json");
-    const ipData = await ipResponse.json();
-    await fetchData((queryString = ipData.ip));
-  } catch (error) {
-    try {
-      await fetchData((queryString = "id:2842265"));
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-  }
-  searchInput.value = locationName = `${weatherData.location.name}, ${weatherData.location.country}`;
-  triggerFadeInAnimations();
-  updateWeatherDetails();
-}
+
 
 window.addEventListener("resize", adjustSuggestionsListWidth);
 
@@ -169,7 +170,7 @@ searchInput.addEventListener("input", async () => {
   }
   suggestionsList.style.display = "block";
   try {
-    const response = await fetch(`https://api.weatherapi.com/v1/search.json?key=fd9923cd2bc740a5b2a13313242808&q=${encodeURIComponent(query)}`);
+    const response = await fetch(`https://api.weatherapi.com/v1/search.json?key=76acc3465ca048d19ee133920240211&q=${encodeURIComponent(query)}`);
     const suggestions = await response.json();
     if (suggestions.length == 0) {
       suggestionsList.innerHTML = `<li id="suggestionMessage"><i>no suggestions...</i></li>`;
